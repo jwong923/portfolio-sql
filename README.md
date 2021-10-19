@@ -8,5 +8,6 @@ Major finding in this project:
 - Overall, the pandemic situation did not fade out after the vaccination programme starts, instead the situation worsen in some states. For example, the daily infection number in Kentucky reach another peak in September this year. 
 - The most popular vaccination manufacturer is Pifizer, followed by Moderna and Janssen. There is a small portion of people took the vaccine made by other producers. 
 
-You can click on the map to see the details of each state. 
 
+The visualized output are shown in the Tableau Public: https://public.tableau.com/app/profile/wong.lai.sze2321/viz/USCOVID-19VaccinationDashboard1510updated/Dashboard1?publish=yes
+You can click on the map to see the details of each state. 
