@@ -1,0 +1,447 @@
+/*
+Covid 19 Data Exploration 
+Skills used: Joins, Converting Data Types, CTE's, Pivot Table, Windows Functions, Aggregate Functions, Case Statement
+*/
+
+-- 1. 
+-- US Graph 1 (country map)
+-- WITH CTE_graph1 as (
+-- select 
+--     CASE location
+--     WHEN 'AL'  THEN 'Alabama'
+--     WHEN 'AK' THEN 'Alaska'
+--     WHEN 'AZ' THEN  'Arizona'
+--     WHEN 'AR' THEN  'Arkansas'
+--     WHEN 'CA' THEN  'California'
+--     WHEN 'CO' THEN  'Colorado'
+--     WHEN 'CT' THEN  'Connecticut'
+--     WHEN 'DE' THEN  'Delaware'
+--     WHEN 'DC' THEN  'District of Columbia'
+--     WHEN 'FL' THEN  'Florida'
+--     WHEN 'GA' THEN  'Georgia'
+--     WHEN 'HI' THEN  'Hawaii'
+--     WHEN 'ID' THEN  'Idaho'
+--     WHEN 'IL' THEN  'Illinois'
+--     WHEN 'IN' THEN  'Indiana'
+--     WHEN 'IA' THEN  'Iowa'
+--     WHEN  'KS' THEN  'Kansas'
+--     WHEN  'KY' THEN  'Kentucky'
+--     WHEN 'LA'  THEN  'Louisiana'
+--     WHEN 'ME' THEN 'Maine'
+--     WHEN  'MD' THEN 'Maryland'
+--     WHEN 'MA' THEN 'Massachusetts' 
+--     WHEN 'MI' THEN 'Michigan'
+--     WHEN 'MN' THEN 'Minnesota'
+--     WHEN 'MS' THEN 'Mississippi'
+--     WHEN 'MO' THEN 'Missouri'
+--     WHEN 'MT' THEN 'Montana'
+--     WHEN 'NE' THEN 'Nebraska'
+--     WHEN 'NV' THEN 'Nevada'
+--     WHEN 'NH' THEN 'New Hampshire'
+--     WHEN 'NJ' THEN 'New Jersey'
+--     WHEN 'NM' THEN 'New Mexico'
+--     WHEN 'NY' THEN 'New York'
+--     WHEN 'NC' THEN 'North Carolina'
+--     WHEN 'ND' THEN 'North Dakota'
+--     WHEN 'OH' THEN 'Ohio'
+--     WHEN 'OK'  THEN 'Oklahoma'
+--     WHEN  'OR' THEN 'Oregon' 
+--     WHEN 'PA'  THEN  'Pennsylvania'
+--     WHEN  'RI' THEN 'Rhode Island' 
+--     WHEN   'SC' THEN 'South Carolina'
+--     WHEN 'SD' THEN 'South Dakota' 
+--     WHEN  'TN'  THEN  'Tennessee'
+--     WHEN 'TX'  THEN  'Texas' 
+--     WHEN  'UT'  THEN 'Utah'
+--     WHEN  'VT'  THEN 'Vermont'
+--     WHEN  'VA'   THEN 'Virginia'
+--     WHEN  'WA'   THEN 'Washington'
+--     WHEN  'WV'   THEN 'West Virginia'
+--     WHEN  'WI'   THEN 'Wisconsin'
+--     WHEN  'WY'   THEN 'Wyoming' 
+--     WHEN  'AB'  THEN  'Alberta'
+--     WHEN  'BC' THEN'British Columbia'
+--     WHEN  'MB'  THEN 'Manitoba' 
+--     WHEN 'NB' THEN 'New Brunswick'  
+--     WHEN  'NL' THEN 'Newfoundland and Labrador' 
+--     WHEN  'NT' THEN 'Northwest Territories' 
+--     WHEN  'NS' THEN 'Nova Scotia' 
+--     WHEN  'NU'  THEN 'Nunavut'
+--     WHEN  'ON'  THEN 'Ontario'
+--     WHEN  'PE' THEN 'Prince Edward Island' 
+--     WHEN  'QC' THEN 'Quebec' 
+--     WHEN 'SK' THEN 'Saskatchewan'  
+--     WHEN   'YT' THEN 'Yukon Territory'
+--     ELSE NULL
+-- END as location_full, 
+-- max(series_complete_Pop_Pct) as 'Fully Vaccinated Population', 
+-- max(Series_Complete_12PlusPop_Pct) as '12+', max(Series_Complete_18PlusPop_Pct) as '18+', 
+-- max(Series_Complete_65PlusPop_Pct) as '65+'
+-- from [COVID-19_Vaccinations_in_the_United_States_Jurisdiction]
+-- group by location
+-- ) select * from CTE_graph1
+-- where location_full is not null
+-- order by location_full;
+
+
+
+
+-- US Graph 2 (line graph)
+-- with cte_graph2 as (
+-- SELECT submission_date as 'Date', 
+-- CASE state
+--     WHEN 'AL'  THEN 'Alabama'
+--     WHEN 'AK' THEN 'Alaska'
+--     WHEN 'AZ' THEN  'Arizona'
+--     WHEN 'AR' THEN  'Arkansas'
+--     WHEN 'CA' THEN  'California'
+--     WHEN 'CO' THEN  'Colorado'
+--     WHEN 'CT' THEN  'Connecticut'
+--     WHEN 'DE' THEN  'Delaware'
+--     WHEN 'DC' THEN  'District of Columbia'
+--     WHEN 'FL' THEN  'Florida'
+--     WHEN 'GA' THEN  'Georgia'
+--     WHEN 'HI' THEN  'Hawaii'
+--     WHEN 'ID' THEN  'Idaho'
+--     WHEN 'IL' THEN  'Illinois'
+--     WHEN 'IN' THEN  'Indiana'
+--     WHEN 'IA' THEN  'Iowa'
+--     WHEN  'KS' THEN  'Kansas'
+--     WHEN  'KY' THEN  'Kentucky'
+--     WHEN 'LA'  THEN  'Louisiana'
+--     WHEN 'ME' THEN 'Maine'
+--     WHEN  'MD' THEN 'Maryland'
+--     WHEN 'MA' THEN 'Massachusetts' 
+--     WHEN 'MI' THEN 'Michigan'
+--     WHEN 'MN' THEN 'Minnesota'
+--     WHEN 'MS' THEN 'Mississippi'
+--     WHEN 'MO' THEN 'Missouri'
+--     WHEN 'MT' THEN 'Montana'
+--     WHEN 'NE' THEN 'Nebraska'
+--     WHEN 'NV' THEN 'Nevada'
+--     WHEN 'NH' THEN 'New Hampshire'
+--     WHEN 'NJ' THEN 'New Jersey'
+--     WHEN 'NM' THEN 'New Mexico'
+--     WHEN 'NY' THEN 'New York'
+--     WHEN 'NC' THEN 'North Carolina'
+--     WHEN 'ND' THEN 'North Dakota'
+--     WHEN 'OH' THEN 'Ohio'
+--     WHEN 'OK'  THEN 'Oklahoma'
+--     WHEN  'OR' THEN 'Oregon' 
+--     WHEN 'PA'  THEN  'Pennsylvania'
+--     WHEN  'RI' THEN 'Rhode Island' 
+--     WHEN   'SC' THEN 'South Carolina'
+--     WHEN 'SD' THEN 'South Dakota' 
+--     WHEN  'TN'  THEN  'Tennessee'
+--     WHEN 'TX'  THEN  'Texas' 
+--     WHEN  'UT'  THEN 'Utah'
+--     WHEN  'VT'  THEN 'Vermont'
+--     WHEN  'VA'   THEN 'Virginia'
+--     WHEN  'WA'   THEN 'Washington'
+--     WHEN  'WV'   THEN 'West Virginia'
+--     WHEN  'WI'   THEN 'Wisconsin'
+--     WHEN  'WY'   THEN 'Wyoming' 
+--     WHEN  'AB'  THEN  'Alberta'
+--     WHEN  'BC' THEN'British Columbia'
+--     WHEN  'MB'  THEN 'Manitoba' 
+--     WHEN 'NB' THEN 'New Brunswick'  
+--     WHEN  'NL' THEN 'Newfoundland and Labrador' 
+--     WHEN  'NT' THEN 'Northwest Territories' 
+--     WHEN  'NS' THEN 'Nova Scotia' 
+--     WHEN  'NU'  THEN 'Nunavut'
+--     WHEN  'ON'  THEN 'Ontario'
+--     WHEN  'PE' THEN 'Prince Edward Island' 
+--     WHEN  'QC' THEN 'Quebec' 
+--     WHEN 'SK' THEN 'Saskatchewan'  
+--     WHEN   'YT' THEN 'Yukon Territory'
+--     ELSE NULL
+-- END AS State_in_full,
+-- new_case as 'Daily New Cases', new_death as  'Daily New Deaths',
+-- CASE
+--     when submission_date < '2020-12-23' THEN 'Before'
+--     ELSE 'After'
+-- END AS 'Before or after vaccination starts',
+-- AVG(new_case) over( order by [submission_date] Rows between 6 preceding and current row) as 'moving_cases',
+-- AVG(new_death) over( order by [submission_date] Rows between 6 preceding and current row) as 'moving_deaths'
+-- from [United_States_COVID-19_Cases_and_Deaths_by_State_over_Time]
+-- )
+-- select * from cte_graph2
+-- where State_in_full is not null
+-- order by [Date] desc
+
+
+-- US Graph 3 (scatter plot)
+-- With cte1 as (
+--     SELECT state, max(tot_death) as state_deaths, max(tot_cases) as state_cases from [United_States_COVID-19_Cases_and_Deaths_by_State_over_Time]
+--     group by State
+-- ),
+--     cte2 as (   
+--     SELECT 
+--     CASE location
+--     WHEN 'Alabama' THEN 'AL' 
+--     WHEN 'Alaska' THEN 'AK' 
+--     WHEN 'Arizona' THEN 'AZ' 
+--     WHEN 'Arkansas' THEN 'AR' 
+--     WHEN 'California' THEN 'CA' 
+--     WHEN 'Colorado' THEN 'CO' 
+--     WHEN 'Connecticut' THEN 'CT' 
+--     WHEN 'Delaware' THEN 'DE' 
+--     WHEN 'District of Columbia' THEN 'DC' 
+--     WHEN 'Florida' THEN 'FL' 
+--     WHEN 'Georgia' THEN 'GA' 
+--     WHEN 'Hawaii' THEN 'HI' 
+--     WHEN 'Idaho' THEN 'ID' 
+--     WHEN 'Illinois' THEN 'IL' 
+--     WHEN 'Indiana' THEN 'IN' 
+--     WHEN 'Iowa' THEN 'IA' 
+--     WHEN 'Kansas' THEN 'KS' 
+--     WHEN 'Kentucky' THEN 'KY' 
+--     WHEN 'Louisiana' THEN 'LA' 
+--     WHEN 'Maine' THEN 'ME' 
+--     WHEN 'Maryland' THEN 'MD' 
+--     WHEN 'Massachusetts' THEN 'MA' 
+--     WHEN 'Michigan' THEN 'MI' 
+--     WHEN 'Minnesota' THEN 'MN' 
+--     WHEN 'Mississippi' THEN 'MS' 
+--     WHEN 'Missouri' THEN 'MO' 
+--     WHEN 'Montana' THEN 'MT' 
+--     WHEN 'Nebraska' THEN 'NE' 
+--     WHEN 'Nevada' THEN 'NV' 
+--     WHEN 'New Hampshire' THEN 'NH' 
+--     WHEN 'New Jersey' THEN 'NJ' 
+--     WHEN 'New Mexico' THEN 'NM' 
+--     WHEN 'New York' THEN 'NY' 
+--     WHEN 'North Carolina' THEN 'NC' 
+--     WHEN 'North Dakota' THEN 'ND' 
+--     WHEN 'Ohio' THEN 'OH' 
+--     WHEN 'Oklahoma' THEN 'OK' 
+--     WHEN 'Oregon' THEN 'OR' 
+--     WHEN 'Pennsylvania' THEN 'PA' 
+--     WHEN 'Rhode Island' THEN 'RI' 
+--     WHEN 'South Carolina' THEN 'SC' 
+--     WHEN 'South Dakota' THEN 'SD' 
+--     WHEN 'Tennessee' THEN 'TN' 
+--     WHEN 'Texas' THEN 'TX' 
+--     WHEN 'Utah' THEN 'UT' 
+--     WHEN 'Vermont' THEN 'VT' 
+--     WHEN 'Virginia' THEN 'VA' 
+--     WHEN 'Washington' THEN 'WA' 
+--     WHEN 'West Virginia' THEN 'WV' 
+--     WHEN 'Wisconsin' THEN 'WI' 
+--     WHEN 'Wyoming' THEN 'WY' 
+--     WHEN 'Alberta' THEN 'AB' 
+--     WHEN 'British Columbia' THEN 'BC' 
+--     WHEN 'Manitoba' THEN 'MB' 
+--     WHEN 'New Brunswick' THEN 'NB' 
+--     WHEN 'Newfoundland and Labrador' THEN 'NL' 
+--     WHEN 'Northwest Territories' THEN 'NT' 
+--     WHEN 'Nova Scotia' THEN 'NS' 
+--     WHEN 'Nunavut' THEN 'NU' 
+--     WHEN 'Ontario' THEN 'ON' 
+--     WHEN 'Prince Edward Island' THEN 'PE' 
+--     WHEN 'Quebec' THEN 'QC' 
+--     WHEN 'Saskatchewan' THEN 'SK' 
+--     WHEN 'Yukon Territory' THEN 'YT' 
+--     ELSE NULL
+-- END as location
+--     , max(people_fully_vaccinated_per_hundred) as complete_vac_hundred from us_state_vaccinations
+--     group by location
+-- )
+-- SELECT table1.state, (convert(float,table1.state_deaths)/table1.state_cases)*100 as 'Death rate' , 
+-- table2.complete_vac_hundred as 'Fully Vaccinated Population'
+-- from cte1 table1
+-- inner join cte2 table2
+-- on table1.state = table2.location
+-- order by complete_vac_hundred
+
+
+
+
+-- -- Graph 4 (bar chart): 
+-- with cte4 as (
+-- select 
+--     CASE location
+--     WHEN 'AL'  THEN 'Alabama'
+--     WHEN 'AK' THEN 'Alaska'
+--     WHEN 'AZ' THEN  'Arizona'
+--     WHEN 'AR' THEN  'Arkansas'
+--     WHEN 'CA' THEN  'California'
+--     WHEN 'CO' THEN  'Colorado'
+--     WHEN 'CT' THEN  'Connecticut'
+--     WHEN 'DE' THEN  'Delaware'
+--     WHEN 'DC' THEN  'District of Columbia'
+--     WHEN 'FL' THEN  'Florida'
+--     WHEN 'GA' THEN  'Georgia'
+--     WHEN 'HI' THEN  'Hawaii'
+--     WHEN 'ID' THEN  'Idaho'
+--     WHEN 'IL' THEN  'Illinois'
+--     WHEN 'IN' THEN  'Indiana'
+--     WHEN 'IA' THEN  'Iowa'
+--     WHEN  'KS' THEN  'Kansas'
+--     WHEN  'KY' THEN  'Kentucky'
+--     WHEN 'LA'  THEN  'Louisiana'
+--     WHEN 'ME' THEN 'Maine'
+--     WHEN  'MD' THEN 'Maryland'
+--     WHEN 'MA' THEN 'Massachusetts' 
+--     WHEN 'MI' THEN 'Michigan'
+--     WHEN 'MN' THEN 'Minnesota'
+--     WHEN 'MS' THEN 'Mississippi'
+--     WHEN 'MO' THEN 'Missouri'
+--     WHEN 'MT' THEN 'Montana'
+--     WHEN 'NE' THEN 'Nebraska'
+--     WHEN 'NV' THEN 'Nevada'
+--     WHEN 'NH' THEN 'New Hampshire'
+--     WHEN 'NJ' THEN 'New Jersey'
+--     WHEN 'NM' THEN 'New Mexico'
+--     WHEN 'NY' THEN 'New York'
+--     WHEN 'NC' THEN 'North Carolina'
+--     WHEN 'ND' THEN 'North Dakota'
+--     WHEN 'OH' THEN 'Ohio'
+--     WHEN 'OK'  THEN 'Oklahoma'
+--     WHEN  'OR' THEN 'Oregon' 
+--     WHEN 'PA'  THEN  'Pennsylvania'
+--     WHEN  'RI' THEN 'Rhode Island' 
+--     WHEN   'SC' THEN 'South Carolina'
+--     WHEN 'SD' THEN 'South Dakota' 
+--     WHEN  'TN'  THEN  'Tennessee'
+--     WHEN 'TX'  THEN  'Texas' 
+--     WHEN  'UT'  THEN 'Utah'
+--     WHEN  'VT'  THEN 'Vermont'
+--     WHEN  'VA'   THEN 'Virginia'
+--     WHEN  'WA'   THEN 'Washington'
+--     WHEN  'WV'   THEN 'West Virginia'
+--     WHEN  'WI'   THEN 'Wisconsin'
+--     WHEN  'WY'   THEN 'Wyoming' 
+--     WHEN  'AB'  THEN  'Alberta'
+--     WHEN  'BC' THEN'British Columbia'
+--     WHEN  'MB'  THEN 'Manitoba' 
+--     WHEN 'NB' THEN 'New Brunswick'  
+--     WHEN  'NL' THEN 'Newfoundland and Labrador' 
+--     WHEN  'NT' THEN 'Northwest Territories' 
+--     WHEN  'NS' THEN 'Nova Scotia' 
+--     WHEN  'NU'  THEN 'Nunavut'
+--     WHEN  'ON'  THEN 'Ontario'
+--     WHEN  'PE' THEN 'Prince Edward Island' 
+--     WHEN  'QC' THEN 'Quebec' 
+--     WHEN 'SK' THEN 'Saskatchewan'  
+--     WHEN   'YT' THEN 'Yukon Territory'
+--     ELSE NULL
+-- END as location_full, 
+-- max(series_complete_moderna) as Moderna, 
+-- max(series_complete_pfizer) as Pfizer,
+-- max(series_complete_janssen) as Janssen,
+-- max(series_complete_unk_manuf) as Other
+-- from [COVID-19_Vaccinations_in_the_United_States_Jurisdiction]
+-- group by location
+-- )
+-- select *
+-- from cte4 
+-- UNPIVOT
+-- (
+--     series_complete
+--     for provider in (Moderna, Pfizer, Janssen, Other )
+-- ) as vac_provider_unpivot 
+-- where location_full is not null
+
+
+
+-- -- Create view to remove na and 7-day rolling average columns, also joining all tables together to make the plot in tableau more interactive
+
+-- CREATE view nona_totab as 
+-- with cte_2graphs as (
+-- SELECT us_covid.submission_date, us_covid.state, vacc_juris.Series_Complete_Pop_Pct, 
+-- us_covid.new_case, us_covid.new_death, us_covid.tot_cases, us_covid.tot_death,
+-- vacc_juris.Series_Complete_Yes,
+-- vacc_juris.Series_Complete_Janssen, vacc_juris.Series_Complete_Pfizer, vacc_juris.Series_Complete_Moderna, 
+-- vacc_juris.Series_Complete_Unk_Manuf
+-- from [United_States_COVID-19_Cases_and_Deaths_by_State_over_Time] us_covid
+-- LEFT JOIN [COVID-19_Vaccinations_in_the_United_States_Jurisdiction] vacc_juris
+-- ON vacc_juris.Date = us_covid.submission_date and vacc_juris.Location = us_covid.state
+-- ) 
+-- select submission_date, 
+-- CASE [state]
+--     WHEN 'AL'  THEN 'Alabama'
+--     WHEN 'AK' THEN 'Alaska'
+--     WHEN 'AZ' THEN  'Arizona'
+--     WHEN 'AR' THEN  'Arkansas'
+--     WHEN 'CA' THEN  'California'
+--     WHEN 'CO' THEN  'Colorado'
+--     WHEN 'CT' THEN  'Connecticut'
+--     WHEN 'DE' THEN  'Delaware'
+--     WHEN 'DC' THEN  'District of Columbia'
+--     WHEN 'FL' THEN  'Florida'
+--     WHEN 'GA' THEN  'Georgia'
+--     WHEN 'HI' THEN  'Hawaii'
+--     WHEN 'ID' THEN  'Idaho'
+--     WHEN 'IL' THEN  'Illinois'
+--     WHEN 'IN' THEN  'Indiana'
+--     WHEN 'IA' THEN  'Iowa'
+--     WHEN  'KS' THEN  'Kansas'
+--     WHEN  'KY' THEN  'Kentucky'
+--     WHEN 'LA'  THEN  'Louisiana'
+--     WHEN 'ME' THEN 'Maine'
+--     WHEN  'MD' THEN 'Maryland'
+--     WHEN 'MA' THEN 'Massachusetts' 
+--     WHEN 'MI' THEN 'Michigan'
+--     WHEN 'MN' THEN 'Minnesota'
+--     WHEN 'MS' THEN 'Mississippi'
+--     WHEN 'MO' THEN 'Missouri'
+--     WHEN 'MT' THEN 'Montana'
+--     WHEN 'NE' THEN 'Nebraska'
+--     WHEN 'NV' THEN 'Nevada'
+--     WHEN 'NH' THEN 'New Hampshire'
+--     WHEN 'NJ' THEN 'New Jersey'
+--     WHEN 'NM' THEN 'New Mexico'
+--     WHEN 'NY' THEN 'New York'
+--     WHEN 'NC' THEN 'North Carolina'
+--     WHEN 'ND' THEN 'North Dakota'
+--     WHEN 'OH' THEN 'Ohio'
+--     WHEN 'OK'  THEN 'Oklahoma'
+--     WHEN  'OR' THEN 'Oregon' 
+--     WHEN 'PA'  THEN  'Pennsylvania'
+--     WHEN  'RI' THEN 'Rhode Island' 
+--     WHEN   'SC' THEN 'South Carolina'
+--     WHEN 'SD' THEN 'South Dakota' 
+--     WHEN  'TN'  THEN  'Tennessee'
+--     WHEN 'TX'  THEN  'Texas' 
+--     WHEN  'UT'  THEN 'Utah'
+--     WHEN  'VT'  THEN 'Vermont'
+--     WHEN  'VA'   THEN 'Virginia'
+--     WHEN  'WA'   THEN 'Washington'
+--     WHEN  'WV'   THEN 'West Virginia'
+--     WHEN  'WI'   THEN 'Wisconsin'
+--     WHEN  'WY'   THEN 'Wyoming' 
+--     WHEN  'AB'  THEN  'Alberta'
+--     WHEN  'BC' THEN'British Columbia'
+--     WHEN  'MB'  THEN 'Manitoba' 
+--     WHEN 'NB' THEN 'New Brunswick'  
+--     WHEN  'NL' THEN 'Newfoundland and Labrador' 
+--     WHEN  'NT' THEN 'Northwest Territories' 
+--     WHEN  'NS' THEN 'Nova Scotia' 
+--     WHEN  'NU'  THEN 'Nunavut'
+--     WHEN  'ON'  THEN 'Ontario'
+--     WHEN  'PE' THEN 'Prince Edward Island' 
+--     WHEN  'QC' THEN 'Quebec' 
+--     WHEN 'SK' THEN 'Saskatchewan'  
+--     WHEN   'YT' THEN 'Yukon Territory'
+--     ELSE NULL
+-- END AS state_in_full, 
+-- isnull(Series_Complete_Pop_Pct, 0) as 'Fully Vaccinated Population', new_case, new_death,
+-- CASE 
+--     When tot_cases = 0 
+--     THEN 0
+--     ELSE (convert(float,tot_death)/tot_cases)*100
+--     END AS 'Death rate',
+-- isnull(Series_Complete_Janssen, 0) as 'Janssen', isnull(Series_Complete_Pfizer, 0) as 'Pfizer', 
+-- isnull(Series_Complete_Moderna, 0 ) as 'Moderna', isnull(Series_Complete_Unk_Manuf, 0) as 'Other',
+-- CASE
+--     when submission_date > '2020-12-14' THEN 'After'
+--     ELSE 'Before'
+-- END AS 'Before or after vaccination starts'
+-- FROM cte_2graphs
+
+
+-- select *, AVG(new_case) over( partition by state_in_full order by submission_date desc Rows between 6 preceding and current row) as 'moving_cases',
+-- AVG(new_death) over( partition by state_in_full order by submission_date Rows between 6 preceding and current row) as 'moving_deaths' from nona_totab
+-- where state_in_full is not null
+-- order by state_in_full, submission_date desc
