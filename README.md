@@ -10,4 +10,5 @@ Major finding in this project:
 
 
 The visualized output are shown in the Tableau Public: https://public.tableau.com/app/profile/wong.lai.sze2321/viz/USCOVID-19VaccinationDashboard1510updated/Dashboard1?publish=yes
+
 You can click on the map to see the details of each state. 
