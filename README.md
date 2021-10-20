@@ -10,6 +10,6 @@ Major finding in this project:
 
 
 The visualized output are shown in the Tableau Public: https://public.tableau.com/app/profile/wong.lai.sze2321/viz/US_Covid_15102021/Dashboard3
+(You can hover over the map to see the details of each state.)
 
-You can click on the map to see the details of each state. 
 All datasets used in this project are uploaded, except one exceeds the file size limiation. This dataset can be downloaded via https://data.cdc.gov/Vaccinations/COVID-19-Vaccinations-in-the-United-States-Jurisdi/unsk-b7fc
